@@ -6,7 +6,7 @@
 name: Thanh Son
 
 # Short bio or description (displayed in the header)
-description: Professional Yapper
+description:
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://avatars.githubusercontent.com/u/69808662?s=400&u=fd954868b9acf56599cd286f69641fbebdb266dc&v=4
@@ -21,9 +21,9 @@ footer-links:
   email:
   facebook:
   flickr:
-  github: https://github.com/bjergsen243
+  github: bjergsen243
   instagram:
-  linkedin: https://www.linkedin.com/in/sonnt243/
+  linkedin: sonnt243/
   pinterest:
   rss: # just type anything here for a working RSS icon
   twitter: 
