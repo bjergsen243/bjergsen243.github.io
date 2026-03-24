@@ -27,13 +27,31 @@ body {
   background-attachment: fixed;
   font: 18px/1.6 $helvetica;
   color: $darkGray;
-  cursor: url('/images/pochacco-cursor.svg') 16 16, auto;
+  cursor: url('/images/pochacco-cursor.png') 16 16, auto;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 // Pochacco cursor for interactive elements
 a, button, .clickable, input[type="submit"] {
-  cursor: url('/images/pochacco-pointer.svg') 16 16, pointer;
+  cursor: url('/images/pochacco-pointer.png') 16 16, pointer;
+}
+
+// Sparkle canvas - full page background
+#sparkle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// Make sure content is above sparkles
+.wrapper-masthead, #main, .wrapper-footer {
+  position: relative;
+  z-index: 1;
 }
 
 .container {
@@ -181,8 +199,9 @@ img {
 
 .wrapper-masthead {
   margin-bottom: 40px;
-  background: linear-gradient(135deg, rgba($pochacco-blue, 0.1) 0%, rgba($pochacco-mint, 0.1) 100%);
+  background: linear-gradient(135deg, rgba($pochacco-blue, 0.15) 0%, rgba($pochacco-mint, 0.1) 100%);
   border-bottom: 3px solid rgba($pochacco-blue, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .masthead {
@@ -210,6 +229,7 @@ img {
     border: 3px solid $pochacco-blue;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: $white;
+    object-fit: cover;
 
     &:hover {
       transform: scale(1.1) rotate(5deg);
@@ -297,11 +317,12 @@ nav {
 .posts > .post {
   padding: 24px;
   margin-bottom: 24px;
-  background: $white;
+  background: rgba($white, 0.9);
   border-radius: $border-radius;
   box-shadow: $card-shadow;
   border: 1px solid rgba($pochacco-blue, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(5px);
 
   &:hover {
     transform: translateY(-2px);
@@ -402,58 +423,139 @@ footer {
   color: $gray;
 }
 
-// Pochacco decorative elements
-.pochacco-decoration {
+// =====================
+// Pochacco Animations
+// =====================
+
+// Running Pochacco across the bottom
+.pochacco-runner {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  opacity: 0.6;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  bottom: 10px;
+  z-index: 50;
   pointer-events: none;
-  z-index: 100;
+  animation: pochaccoRun 18s linear infinite;
+
+  img {
+    width: 80px;
+    height: auto;
+    border-radius: 0;
+    animation: pochaccoBounce 0.4s ease-in-out infinite;
+  }
 
   @include mobile {
-    width: 40px;
-    height: 40px;
-    bottom: 10px;
-    right: 10px;
+    img {
+      width: 50px;
+    }
   }
 }
 
-// Pochacco paw print trail animation
-.paw-trail {
+@keyframes pochaccoRun {
+  0% {
+    left: -100px;
+    transform: scaleX(1);
+  }
+  45% {
+    left: calc(100vw + 100px);
+    transform: scaleX(1);
+  }
+  45.01% {
+    transform: scaleX(-1);
+  }
+  90% {
+    left: -100px;
+    transform: scaleX(-1);
+  }
+  90.01% {
+    transform: scaleX(1);
+  }
+  100% {
+    left: -100px;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pochaccoBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+// Floating Pochacco corner decoration
+.pochacco-float-corner {
   position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  pointer-events: none;
+  animation: pochaccoFloat 4s ease-in-out infinite;
+  opacity: 0.8;
+
+  img {
+    width: 70px;
+    height: auto;
+    border-radius: 0;
+    filter: drop-shadow(0 4px 8px rgba($pochacco-blue, 0.3));
+  }
+
+  @include mobile {
+    bottom: 10px;
+    right: 10px;
+
+    img {
+      width: 45px;
+    }
+  }
+}
+
+@keyframes pochaccoFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(3deg); }
+  75% { transform: translateY(-6px) rotate(-3deg); }
+}
+
+// Paw print trail on click
+.paw-trail {
+  position: absolute;
   pointer-events: none;
   z-index: 9999;
-  width: 20px;
-  height: 20px;
   opacity: 0;
-  animation: pawFade 1s ease-out forwards;
+  animation: pawFade 1.2s ease-out forwards;
 }
 
 @keyframes pawFade {
   0% {
-    opacity: 0.6;
-    transform: scale(1);
+    opacity: 0.8;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.2) rotate(10deg);
   }
   100% {
     opacity: 0;
-    transform: scale(0.5);
+    transform: scale(0.3) rotate(20deg);
   }
 }
 
-// Floating Pochacco stars/sparkles
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+// Cursor sparkle trail
+.cursor-sparkle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 9998;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: sparkleTrail 0.6s ease-out forwards;
 }
 
-.pochacco-star {
-  display: inline-block;
-  animation: float 3s ease-in-out infinite;
-  color: $pochacco-blue;
+@keyframes sparkleTrail {
+  0% {
+    opacity: 0.8;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) translateY(-15px);
+  }
 }
 
 // Tags styling for blog posts
