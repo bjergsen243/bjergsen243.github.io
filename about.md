@@ -4,27 +4,18 @@ title: About
 permalink: /about/
 ---
 
-Hey there! I'm **Son Nguyen** — a backend engineer who talks to databases more than humans.
+Hi, I'm Son. I write Go for a living.
 
-4 years of writing Go, and I still `panic` sometimes. Not the language kind. Well... also the language kind.
+Been doing backend stuff for about 4 years now — mostly building services, yelling at goroutines, and pretending I understand distributed systems.
 
-### What I do
+### These days
 
-I build backend systems in **Go** — the kind of code that runs quietly in the background while the frontend gets all the credit. You're welcome, React devs.
+I'm going down the OS rabbit hole. Specifically poking around **Agent OS** and how operating systems actually work under the hood. It's one of those things where the more you learn, the less you feel like you know. Pretty humbling when you realize your code runs on top of decades of wizardry you never thought about.
 
-### What I'm exploring
+### Why this blog
 
-Currently deep-diving into **Operating Systems** and **Agent OS** — because apparently making software that works on *one* OS wasn't challenging enough, I want to understand how to build the OS itself. If you don't hear from me in a while, I'm probably stuck in a kernel panic. (The real kind this time.)
+Honestly? I just want a place to dump things I learn so I don't forget them. If someone else finds it useful, cool. If not, at least future me will thank present me.
 
-### Fun facts
+### Get in touch
 
-- I chose Go because `if err != nil` builds character
-- My code reviews are 50% "LGTM" and 50% existential crisis
-- I believe `goroutines` are just tiny interns doing my work concurrently
-- My idea of a good Friday night is reading Linux kernel source code. I'm fun at parties, I promise.
-
-### Contact me
-
-Want to chat about Go, OS internals, or why `select {}` is both the most powerful and laziest line of code?
-
-[Find me on LinkedIn](https://www.linkedin.com/in/sonnt243/)
+[LinkedIn](https://www.linkedin.com/in/sonnt243/) is probably the best way to reach me.
