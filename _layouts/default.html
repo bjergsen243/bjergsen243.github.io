@@ -12,42 +12,34 @@
     <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
     <link rel="icon" type="image/png" href="{{ site.baseurl }}/images/pochacco-favicon.png" />
-
-    <!-- Preload cursor GIFs for smooth transitions -->
-    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-hearts.gif" />
-    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-chick.gif" />
-    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-teddy.gif" />
   </head>
 
   <body>
-    <!-- Custom animated cursor -->
-    <div id="pochacco-cursor">
-      <img id="cursor-img" src="{{ site.baseurl }}/images/pochacco-chick.gif" alt="" />
-    </div>
-
     <!-- Subtle sparkle canvas -->
     <canvas id="sparkle-canvas"></canvas>
 
-    <div class="wrapper-masthead">
-      <div class="container">
-        <header class="masthead clearfix">
-          <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" alt="{{ site.name }}" /></a>
+    <div class="page-wrap">
+      <div class="wrapper-masthead">
+        <div class="container">
+          <header class="masthead clearfix">
+            <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" alt="{{ site.name }}" /></a>
 
-          <div class="site-info">
-            <h1 class="site-name"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
-            <p class="site-description">{{ site.description }}</p>
-          </div>
+            <div class="site-info">
+              <h1 class="site-name"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
+              <p class="site-description">{{ site.description }}</p>
+            </div>
 
-          <nav>
-            <a href="{{ site.baseurl }}/">Blog</a>
-            <a href="{{ site.baseurl }}/about">About</a>
-          </nav>
-        </header>
+            <nav>
+              <a href="{{ site.baseurl }}/">Blog</a>
+              <a href="{{ site.baseurl }}/about">About</a>
+            </nav>
+          </header>
+        </div>
       </div>
-    </div>
 
-    <div id="main" role="main" class="container">
-      {{ content }}
+      <div id="main" role="main" class="container">
+        {{ content }}
+      </div>
     </div>
 
     <div class="wrapper-footer">
@@ -55,68 +47,25 @@
         <footer class="footer">
           {% include svg-icons.html %}
           <div class="footer-row">
-            <img src="{{ site.baseurl }}/images/pochacco-teddy.gif" alt="" class="footer-sticker" />
+            <img src="{{ site.baseurl }}/images/pochacco-6.png" alt="" class="footer-sticker" />
             <span class="footer-text">Made with <span class="heart">&#10084;</span> &amp; Pochacco vibes</span>
-            <img src="{{ site.baseurl }}/images/pochacco-hearts.gif" alt="" class="footer-sticker" />
+            <img src="{{ site.baseurl }}/images/pochacco-10.png" alt="" class="footer-sticker" />
           </div>
         </footer>
       </div>
     </div>
 
-    <!-- Floating Sanrio stickers — only a few, subtle, fixed position -->
-    <div class="bg-sticker bg-sticker-1"><img src="{{ site.baseurl }}/images/sanrio-pompom.gif" alt="" /></div>
-    <div class="bg-sticker bg-sticker-2"><img src="{{ site.baseurl }}/images/sanrio-kitty.gif" alt="" /></div>
+    <!-- Background stickers — all clean transparent PNGs/GIFs -->
+    <div class="bg-sticker bg-sticker-1"><img src="{{ site.baseurl }}/images/pochacco-7.png" alt="" /></div>
+    <div class="bg-sticker bg-sticker-2"><img src="{{ site.baseurl }}/images/pompompurin.png" alt="" /></div>
     <div class="bg-sticker bg-sticker-3"><img src="{{ site.baseurl }}/images/pochacco-hello.gif" alt="" /></div>
-    <div class="bg-sticker bg-sticker-4"><img src="{{ site.baseurl }}/images/sanrio-twins.gif" alt="" /></div>
-    <div class="bg-sticker bg-sticker-5"><img src="{{ site.baseurl }}/images/sanrio-tuxedo.gif" alt="" /></div>
-    <div class="bg-sticker bg-sticker-6"><img src="{{ site.baseurl }}/images/sanrio-pompom2.gif" alt="" /></div>
+    <div class="bg-sticker bg-sticker-4"><img src="{{ site.baseurl }}/images/mymelody.png" alt="" /></div>
+    <div class="bg-sticker bg-sticker-5"><img src="{{ site.baseurl }}/images/pochacco-3.png" alt="" /></div>
+    <div class="bg-sticker bg-sticker-6"><img src="{{ site.baseurl }}/images/sanrio-tuxedo.gif" alt="" /></div>
 
     <script>
     (function() {
       'use strict';
-      var baseurl = '{{ site.baseurl }}';
-
-      // ─── Animated Pochacco Cursor ───
-      var cursorEl = document.getElementById('pochacco-cursor');
-      var cursorImg = document.getElementById('cursor-img');
-      var mouseX = -100, mouseY = -100, cursorX = -100, cursorY = -100;
-      var isMoving = false, moveTimer, current = 'idle';
-
-      var gifs = {
-        idle:  baseurl + '/images/pochacco-chick.gif',
-        move:  baseurl + '/images/pochacco-worried-t.gif',
-        click: baseurl + '/images/pochacco-teddy.gif'
-      };
-
-      function setGif(name) {
-        if (current === name) return;
-        current = name;
-        cursorImg.src = gifs[name] || gifs.idle;
-      }
-
-      document.addEventListener('mousemove', function(e) {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        if (!isMoving) { isMoving = true; setGif('move'); }
-        clearTimeout(moveTimer);
-        moveTimer = setTimeout(function() { isMoving = false; setGif('idle'); }, 200);
-      });
-
-      document.addEventListener('mousedown', function() { setGif('click'); });
-      document.addEventListener('mouseup', function() {
-        setTimeout(function() { setGif(isMoving ? 'move' : 'idle'); }, 400);
-      });
-
-      document.addEventListener('mouseleave', function() { cursorEl.style.opacity = '0'; });
-      document.addEventListener('mouseenter', function() { cursorEl.style.opacity = '1'; });
-
-      // Smooth follow
-      (function tick() {
-        cursorX += (mouseX - cursorX) * 0.18;
-        cursorY += (mouseY - cursorY) * 0.18;
-        cursorEl.style.transform = 'translate(' + cursorX + 'px,' + cursorY + 'px)';
-        requestAnimationFrame(tick);
-      })();
 
       // ─── Subtle sparkle canvas ───
       var canvas = document.getElementById('sparkle-canvas');
@@ -145,7 +94,6 @@
         ctx.globalAlpha = a;
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        // 4-point star
         for (var i = 0; i < 4; i++) {
           var ang = (Math.PI/2)*i + this.phase;
           ctx.lineTo(this.x + Math.cos(ang)*this.r*2.5, this.y + Math.sin(ang)*this.r*2.5);
@@ -162,7 +110,6 @@
         sparkles.forEach(function(s) { s.draw(); });
         requestAnimationFrame(loop);
       })();
-
     })();
     </script>
 
