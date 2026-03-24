@@ -12,13 +12,23 @@
     <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
     <link rel="icon" type="image/png" href="{{ site.baseurl }}/images/pochacco-favicon.png" />
+
+    <!-- Preload cursor GIFs -->
+    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-idle.gif" />
+    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-move.gif" />
+    <link rel="preload" as="image" href="{{ site.baseurl }}/images/pochacco-click.gif" />
   </head>
 
   <body>
-    <!-- Sparkle + floating characters canvas -->
+    <!-- Animated Pochacco cursor -->
+    <div id="pochacco-cursor" class="pochacco-cursor">
+      <img id="cursor-img" src="{{ site.baseurl }}/images/pochacco-idle.gif" alt="" />
+    </div>
+
+    <!-- Sparkle canvas - fixed full viewport -->
     <canvas id="sparkle-canvas"></canvas>
 
-    <!-- Floating Pochacco & friends that randomly appear -->
+    <!-- Floating characters - fixed full viewport -->
     <div id="floating-characters" aria-hidden="true"></div>
 
     <div class="wrapper-masthead">
@@ -48,9 +58,9 @@
         <footer class="footer">
           {% include svg-icons.html %}
           <div class="footer-pochacco">
-            <img src="{{ site.baseurl }}/images/pochacco-5.png" alt="" class="footer-character" />
+            <img src="{{ site.baseurl }}/images/pochacco-dance.gif" alt="" class="footer-gif" />
             <p>Made with <span class="heart">&#10084;</span> and Pochacco vibes</p>
-            <img src="{{ site.baseurl }}/images/pochacco-6.png" alt="" class="footer-character" />
+            <img src="{{ site.baseurl }}/images/pochacco-flowers.gif" alt="" class="footer-gif" />
           </div>
         </footer>
       </div>
@@ -59,194 +69,236 @@
     <script>
     (function() {
       'use strict';
+      var baseurl = '{{ site.baseurl }}';
 
-      // ─── Character image pool ───
-      var characters = [
-        { src: '{{ site.baseurl }}/images/pochacco-1.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-3.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-4.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-5.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-6.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-7.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-8.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-9.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/pochacco-10.png', name: 'pochacco' },
-        { src: '{{ site.baseurl }}/images/cinnamoroll.png', name: 'cinnamoroll' },
-        { src: '{{ site.baseurl }}/images/pompompurin.png', name: 'pompompurin' },
-        { src: '{{ site.baseurl }}/images/mymelody.png', name: 'mymelody' }
-      ];
+      // ─── Animated Pochacco Cursor ───
+      var cursorEl = document.getElementById('pochacco-cursor');
+      var cursorImg = document.getElementById('cursor-img');
+      var mouseX = 0, mouseY = 0;
+      var cursorX = 0, cursorY = 0;
+      var isMoving = false;
+      var moveTimeout;
+      var lastMoveDir = 1; // 1 = right, -1 = left
+      var lastMouseX = 0;
 
-      // ─── Floating characters that drift across the page ───
-      var container = document.getElementById('floating-characters');
-      var activeChars = [];
-      var maxChars = 6;
+      var gifIdle = baseurl + '/images/pochacco-idle.gif';
+      var gifMove = baseurl + '/images/pochacco-move.gif';
+      var gifClick = baseurl + '/images/pochacco-click.gif';
+      var gifCry = baseurl + '/images/pochacco-cry.gif';
+      var gifWave = baseurl + '/images/pochacco-wave.gif';
+      var currentGif = 'idle';
 
-      function spawnCharacter() {
-        if (activeChars.length >= maxChars) return;
-
-        var char = characters[Math.floor(Math.random() * characters.length)];
-        var el = document.createElement('div');
-        el.className = 'floating-char';
-
-        var img = document.createElement('img');
-        img.src = char.src;
-        img.alt = '';
-        el.appendChild(img);
-
-        // Random size between 40-80px
-        var size = 40 + Math.random() * 40;
-        el.style.width = size + 'px';
-
-        // Random starting position
-        var side = Math.random();
-        var pageH = Math.max(document.body.scrollHeight, window.innerHeight);
-        if (side < 0.25) {
-          // From left
-          el.style.left = '-80px';
-          el.style.top = (Math.random() * pageH * 0.7 + pageH * 0.1) + 'px';
-          el.dataset.dx = (0.3 + Math.random() * 0.5).toString();
-          el.dataset.dy = (-0.2 + Math.random() * 0.4).toString();
-        } else if (side < 0.5) {
-          // From right
-          el.style.left = (window.innerWidth + 10) + 'px';
-          el.style.top = (Math.random() * pageH * 0.7 + pageH * 0.1) + 'px';
-          el.dataset.dx = (-0.3 - Math.random() * 0.5).toString();
-          el.dataset.dy = (-0.2 + Math.random() * 0.4).toString();
-        } else {
-          // From top
-          el.style.left = (Math.random() * window.innerWidth) + 'px';
-          el.style.top = '-80px';
-          el.dataset.dx = (-0.3 + Math.random() * 0.6).toString();
-          el.dataset.dy = (0.2 + Math.random() * 0.4).toString();
+      function setCursorGif(name) {
+        if (currentGif === name) return;
+        currentGif = name;
+        switch (name) {
+          case 'move': cursorImg.src = gifMove; break;
+          case 'click': cursorImg.src = gifClick; break;
+          case 'cry': cursorImg.src = gifCry; break;
+          case 'wave': cursorImg.src = gifWave; break;
+          default: cursorImg.src = gifIdle;
         }
-
-        // Wobble parameters
-        el.dataset.wobble = (Math.random() * Math.PI * 2).toString();
-        el.dataset.wobbleSpeed = (0.01 + Math.random() * 0.02).toString();
-        el.dataset.wobbleAmp = (5 + Math.random() * 15).toString();
-
-        el.style.opacity = (0.25 + Math.random() * 0.35).toString();
-        container.appendChild(el);
-        activeChars.push(el);
       }
 
-      function updateCharacters() {
+      document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        // Detect direction for flipping
+        if (e.clientX > lastMouseX + 2) lastMoveDir = 1;
+        else if (e.clientX < lastMouseX - 2) lastMoveDir = -1;
+        lastMouseX = e.clientX;
+
+        if (!isMoving) {
+          isMoving = true;
+          setCursorGif('move');
+        }
+        clearTimeout(moveTimeout);
+        moveTimeout = setTimeout(function() {
+          isMoving = false;
+          setCursorGif('idle');
+        }, 150);
+      });
+
+      document.addEventListener('mousedown', function() {
+        setCursorGif('click');
+      });
+
+      document.addEventListener('mouseup', function() {
+        setTimeout(function() {
+          setCursorGif(isMoving ? 'move' : 'idle');
+        }, 300);
+      });
+
+      // Smooth cursor follow with slight lag
+      function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+        cursorEl.style.transform = 'translate(' + cursorX + 'px, ' + cursorY + 'px) scaleX(' + lastMoveDir + ')';
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+
+      // Hide cursor when mouse leaves window
+      document.addEventListener('mouseleave', function() {
+        cursorEl.style.opacity = '0';
+      });
+      document.addEventListener('mouseenter', function() {
+        cursorEl.style.opacity = '1';
+      });
+
+      // ─── Floating Pochacco & Friends ───
+      var characters = [
+        baseurl + '/images/pochacco-1.png',
+        baseurl + '/images/pochacco-3.png',
+        baseurl + '/images/pochacco-4.png',
+        baseurl + '/images/pochacco-5.png',
+        baseurl + '/images/pochacco-6.png',
+        baseurl + '/images/pochacco-7.png',
+        baseurl + '/images/pochacco-8.png',
+        baseurl + '/images/pochacco-9.png',
+        baseurl + '/images/pochacco-10.png',
+        baseurl + '/images/cinnamoroll.png',
+        baseurl + '/images/pompompurin.png',
+        baseurl + '/images/mymelody.png',
+        baseurl + '/images/pochacco-wave.gif',
+        baseurl + '/images/pochacco-worried.gif'
+      ];
+
+      var floatContainer = document.getElementById('floating-characters');
+      var activeChars = [];
+      var maxChars = 8;
+
+      function spawnChar() {
+        if (activeChars.length >= maxChars) return;
+        var src = characters[Math.floor(Math.random() * characters.length)];
+        var el = document.createElement('div');
+        el.className = 'floating-char';
+        var img = document.createElement('img');
+        img.src = src;
+        el.appendChild(img);
+
+        var size = 50 + Math.random() * 60;
+        el.style.width = size + 'px';
+        el.style.opacity = (0.15 + Math.random() * 0.25).toString();
+
+        // Spawn from edges
+        var edge = Math.floor(Math.random() * 4);
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var x, y, dx, dy;
+        switch (edge) {
+          case 0: x = -90; y = Math.random() * vh; dx = 0.2 + Math.random() * 0.4; dy = -0.15 + Math.random() * 0.3; break;
+          case 1: x = vw + 10; y = Math.random() * vh; dx = -(0.2 + Math.random() * 0.4); dy = -0.15 + Math.random() * 0.3; break;
+          case 2: x = Math.random() * vw; y = -90; dx = -0.15 + Math.random() * 0.3; dy = 0.2 + Math.random() * 0.3; break;
+          default: x = Math.random() * vw; y = vh + 10; dx = -0.15 + Math.random() * 0.3; dy = -(0.2 + Math.random() * 0.3); break;
+        }
+
+        activeChars.push({
+          el: el, x: x, y: y, dx: dx, dy: dy,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: 0.008 + Math.random() * 0.015,
+          wobbleAmp: 8 + Math.random() * 20
+        });
+        floatContainer.appendChild(el);
+      }
+
+      function updateChars() {
         for (var i = activeChars.length - 1; i >= 0; i--) {
-          var el = activeChars[i];
-          var x = parseFloat(el.style.left);
-          var y = parseFloat(el.style.top);
-          var dx = parseFloat(el.dataset.dx);
-          var dy = parseFloat(el.dataset.dy);
-          var wobble = parseFloat(el.dataset.wobble);
-          var wobbleSpeed = parseFloat(el.dataset.wobbleSpeed);
-          var wobbleAmp = parseFloat(el.dataset.wobbleAmp);
+          var c = activeChars[i];
+          c.wobble += c.wobbleSpeed;
+          c.x += c.dx;
+          c.y += c.dy;
+          var wx = Math.sin(c.wobble) * c.wobbleAmp;
+          var rot = Math.sin(c.wobble) * 8;
+          c.el.style.transform = 'translate(' + (c.x + wx) + 'px, ' + c.y + 'px) rotate(' + rot + 'deg)';
 
-          wobble += wobbleSpeed;
-          el.dataset.wobble = wobble.toString();
-
-          x += dx;
-          y += dy;
-          var visualX = x + Math.sin(wobble) * wobbleAmp;
-
-          el.style.left = x + 'px';
-          el.style.top = y + 'px';
-          el.style.transform = 'translateX(' + (Math.sin(wobble) * wobbleAmp) + 'px) rotate(' + (Math.sin(wobble) * 5) + 'deg)';
-
-          // Remove if off-screen
-          var pageH = Math.max(document.body.scrollHeight, window.innerHeight);
-          if (x < -150 || x > window.innerWidth + 150 || y < -150 || y > pageH + 150) {
-            el.remove();
+          var vw = window.innerWidth, vh = window.innerHeight;
+          if (c.x < -150 || c.x > vw + 150 || c.y < -150 || c.y > vh + 150) {
+            c.el.remove();
             activeChars.splice(i, 1);
           }
         }
-        requestAnimationFrame(updateCharacters);
+        requestAnimationFrame(updateChars);
       }
 
-      // Spawn characters periodically
-      spawnCharacter();
-      spawnCharacter();
-      spawnCharacter();
-      setInterval(spawnCharacter, 4000);
-      updateCharacters();
+      // Initial spawn
+      for (var i = 0; i < 4; i++) setTimeout(spawnChar, i * 800);
+      setInterval(spawnChar, 3500);
+      updateChars();
 
-      // ─── Sparkle canvas background ───
+      // ─── Sparkle Canvas ───
       var canvas = document.getElementById('sparkle-canvas');
       var ctx = canvas.getContext('2d');
       var sparkles = [];
+      var colors = ['#89CFF0', '#B5EAD7', '#FFB6C1', '#FFEAA7', '#DDA0DD', '#a8d8ea'];
 
       function resizeCanvas() {
         canvas.width = window.innerWidth;
-        canvas.height = Math.max(document.body.scrollHeight, window.innerHeight);
+        canvas.height = window.innerHeight;
       }
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
-
-      var sparkleColors = ['#89CFF0', '#B5EAD7', '#FFB6C1', '#FFEAA7', '#DDA0DD', '#a8d8ea'];
 
       function Sparkle() { this.reset(); }
       Sparkle.prototype.reset = function() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2.5 + 0.5;
-        this.opacity = Math.random() * 0.4 + 0.1;
-        this.speed = Math.random() * 0.015 + 0.005;
-        this.angle = Math.random() * Math.PI * 2;
-        this.growing = Math.random() > 0.5;
-        this.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
-        this.twinkleOffset = Math.random() * Math.PI * 2;
+        this.size = Math.random() * 2 + 0.5;
+        this.phase = Math.random() * Math.PI * 2;
+        this.speed = 0.008 + Math.random() * 0.015;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
       };
       Sparkle.prototype.update = function() {
-        this.twinkleOffset += this.speed;
-        this.opacity = 0.15 + Math.sin(this.twinkleOffset) * 0.25;
-        this.x += Math.sin(this.angle + this.twinkleOffset * 0.5) * 0.15;
-        this.y -= 0.08;
+        this.phase += this.speed;
+        this.x += Math.sin(this.phase * 0.7) * 0.1;
+        this.y -= 0.05;
         if (this.y < -5) { this.y = canvas.height + 5; this.x = Math.random() * canvas.width; }
       };
       Sparkle.prototype.draw = function() {
+        var op = 0.15 + Math.sin(this.phase) * 0.2;
+        if (op <= 0) return;
         ctx.save();
-        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.globalAlpha = op;
         ctx.fillStyle = this.color;
         ctx.translate(this.x, this.y);
-        // 4-point star
         ctx.beginPath();
-        for (var i = 0; i < 4; i++) {
-          var r = (Math.PI / 2) * i + this.twinkleOffset;
-          ctx.lineTo(Math.cos(r) * this.size * 2, Math.sin(r) * this.size * 2);
-          ctx.lineTo(Math.cos(r + Math.PI / 4) * this.size * 0.5, Math.sin(r + Math.PI / 4) * this.size * 0.5);
+        for (var j = 0; j < 4; j++) {
+          var a = (Math.PI / 2) * j + this.phase;
+          ctx.lineTo(Math.cos(a) * this.size * 2, Math.sin(a) * this.size * 2);
+          ctx.lineTo(Math.cos(a + Math.PI / 4) * this.size * 0.5, Math.sin(a + Math.PI / 4) * this.size * 0.5);
         }
         ctx.closePath();
         ctx.fill();
         ctx.restore();
       };
 
-      for (var i = 0; i < 40; i++) sparkles.push(new Sparkle());
+      for (var s = 0; s < 45; s++) sparkles.push(new Sparkle());
 
-      function animateSparkles() {
+      (function animSparkles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        sparkles.forEach(function(s) { s.update(); s.draw(); });
-        requestAnimationFrame(animateSparkles);
-      }
-      animateSparkles();
+        sparkles.forEach(function(sp) { sp.update(); sp.draw(); });
+        requestAnimationFrame(animSparkles);
+      })();
 
       // ─── Cursor sparkle trail ───
-      var lastSparkleTime = 0;
+      var lastSpark = 0;
       document.addEventListener('mousemove', function(e) {
         var now = Date.now();
-        if (now - lastSparkleTime < 60) return;
-        lastSparkleTime = now;
+        if (now - lastSpark < 80) return;
+        lastSpark = now;
         var dot = document.createElement('div');
         dot.className = 'cursor-sparkle';
-        dot.style.background = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
         dot.style.left = e.pageX + 'px';
         dot.style.top = e.pageY + 'px';
-        var s = 3 + Math.random() * 5;
-        dot.style.width = s + 'px';
-        dot.style.height = s + 'px';
+        var sz = 3 + Math.random() * 4;
+        dot.style.width = sz + 'px';
+        dot.style.height = sz + 'px';
         document.body.appendChild(dot);
-        setTimeout(function() { dot.remove(); }, 700);
+        setTimeout(function() { dot.remove(); }, 600);
       });
 
-      // ─── Paw trail on click ───
+      // ─── Paw print on click ───
       document.addEventListener('click', function(e) {
         var paw = document.createElement('div');
         paw.className = 'paw-trail';
@@ -259,8 +311,9 @@
         paw.style.left = (e.pageX - 12) + 'px';
         paw.style.top = (e.pageY - 12) + 'px';
         document.body.appendChild(paw);
-        setTimeout(function() { paw.remove(); }, 1200);
+        setTimeout(function() { paw.remove(); }, 1000);
       });
+
     })();
     </script>
 
