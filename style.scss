@@ -567,5 +567,65 @@ footer { padding: 8px 0; text-align: center; }
   &:hover { background: rgba($pochacco-blue, 0.4); }
 }
 
+/*──────────────────────────────*/
+/* MOBILE RESPONSIVE            */
+/*──────────────────────────────*/
+
+@include mobile {
+  body { font-size: 16px; }
+
+  .container { padding: 0 16px; }
+
+  // Hero
+  .hero { padding: 20px 18px; margin-bottom: 20px; }
+  .hero-pochacco { width: 70px; }
+  .hero-text h2 { font-size: 19px; }
+  .hero-text p { font-size: 14px; }
+
+  // Cards
+  .posts > .post { padding: 18px 18px; }
+  #main > article.post,
+  #main > article.page { padding: 22px 18px; }
+  #main { padding: 20px 0 30px; }
+
+  // Typography
+  h1 { font-size: 22px; }
+  h2 { font-size: 19px; }
+  h3 { font-size: 16px; }
+
+  // Code
+  pre { padding: 14px 14px; font-size: 13px; border-radius: 8px; }
+
+  // Hide stickers on small screens — they overlap content
+  .sticker { display: none; }
+  .deco-paw { display: none; }
+
+  // Smaller blobs
+  .blob-1 { width: 200px; height: 200px; }
+  .blob-2 { width: 180px; height: 180px; }
+  .blob-3 { width: 150px; height: 150px; }
+
+  // Section title
+  .section-title { font-size: 12px; margin-bottom: 12px; }
+}
+
+// Tablet breakpoint — stickers get smaller
+@media screen and (max-width: 1024px) and (min-width: 641px) {
+  .sticker img { transform: scale(0.8); }
+  .s7, .s10 { display: none; } // hide bottom stickers on tablet
+}
+
+// Very large screens — stickers push further out
+@media screen and (min-width: 1400px) {
+  .s1  { left: 5%; }
+  .s2  { left: 4%; }
+  .s5  { left: 6%; }
+  .s8  { left: 5%; }
+  .s3  { right: 4%; }
+  .s4  { right: 6%; }
+  .s6  { right: 5%; }
+  .s9  { right: 4%; }
+}
+
 @import "highlights";
 @import "svg-icons";
