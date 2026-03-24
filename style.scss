@@ -80,32 +80,67 @@ body {
 }
 
 /*──────────────────────────────*/
-/* CORNER STICKERS              */
+/* BACKGROUND STICKERS          */
 /*──────────────────────────────*/
 
-.corner-sticker {
+.sticker {
   position: fixed;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.35;
-  border-radius: 0;
+  img { border-radius: 0; }
 }
 
-.corner-tl {
-  top: 80px; left: 16px;
-  width: 65px;
-  animation: gentleFloat 7s ease-in-out infinite;
-}
+// Left side stickers
+.s1  { top: 7%;   left: 2%;   img { width: 60px; } opacity: 0.4;  animation: float1 7s ease-in-out infinite; }
+.s2  { top: 35%;  left: 1%;   img { width: 70px; } opacity: 0.35; animation: float2 9s ease-in-out infinite 1s; }
+.s5  { top: 60%;  left: 3%;   img { width: 55px; } opacity: 0.3;  animation: float1 8s ease-in-out infinite 3s; }
+.s8  { bottom: 12%; left: 2%; img { width: 50px; } opacity: 0.3;  animation: float3 10s ease-in-out infinite 2s; }
 
-.corner-br {
-  bottom: 50px; right: 16px;
-  width: 55px;
-  animation: gentleFloat 8s ease-in-out infinite 2s;
-}
+// Right side stickers
+.s3  { top: 10%;  right: 1%;  img { width: 65px; } opacity: 0.35; animation: float2 8s ease-in-out infinite 2s; }
+.s4  { top: 38%;  right: 3%;  img { width: 50px; } opacity: 0.35; animation: float3 7s ease-in-out infinite; }
+.s6  { top: 58%;  right: 2%;  img { width: 60px; } opacity: 0.35; animation: float1 9s ease-in-out infinite 1.5s; }
+.s9  { bottom: 18%; right: 1%; img { width: 55px; } opacity: 0.3; animation: float2 8s ease-in-out infinite 4s; }
 
-@keyframes gentleFloat {
+// Bottom stickers
+.s7  { bottom: 4%; left: 15%;  img { width: 50px; } opacity: 0.25; animation: float3 9s ease-in-out infinite 0.5s; }
+.s10 { bottom: 5%; right: 18%; img { width: 45px; } opacity: 0.25; animation: float1 8s ease-in-out infinite 3s; }
+
+// Three float variants for visual variety
+@keyframes float1 {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-8px) rotate(3deg); }
+  50%      { transform: translateY(-10px) rotate(4deg); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  30%      { transform: translateY(-8px) rotate(-3deg); }
+  70%      { transform: translateY(4px) rotate(2deg); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-6px) scale(1.05); }
+}
+
+/*──────────────────────────────*/
+/* DECORATIVE PAW PRINTS        */
+/*──────────────────────────────*/
+
+.deco-paw {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  color: rgba($pochacco-blue, 0.08);
+}
+
+.paw-1 { width: 30px; top: 18%;  left: 12%;  transform: rotate(-20deg); animation: pawPulse 5s ease-in-out infinite; }
+.paw-2 { width: 22px; top: 45%;  right: 14%; transform: rotate(15deg);  animation: pawPulse 6s ease-in-out infinite 1s; }
+.paw-3 { width: 26px; bottom: 30%; left: 18%; transform: rotate(-35deg); animation: pawPulse 7s ease-in-out infinite 2s; }
+.paw-4 { width: 20px; top: 70%;  right: 10%; transform: rotate(25deg);  animation: pawPulse 5s ease-in-out infinite 3s; }
+.paw-5 { width: 24px; bottom: 15%; right: 20%; transform: rotate(-10deg); animation: pawPulse 6s ease-in-out infinite 0.5s; }
+
+@keyframes pawPulse {
+  0%, 100% { opacity: 0.5; transform: rotate(var(--r, 0deg)) scale(1); }
+  50%      { opacity: 1;   transform: rotate(var(--r, 0deg)) scale(1.1); }
 }
 
 /*──────────────────────────────*/
