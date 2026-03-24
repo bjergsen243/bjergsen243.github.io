@@ -6,10 +6,10 @@
 name: Son Nguyen
 
 # Short bio or description (displayed in the header)
-description: Gugugago
+description: Technical Blog
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+avatar: /images/pochacco-avatar.svg
 
 #
 # Flags below are optional

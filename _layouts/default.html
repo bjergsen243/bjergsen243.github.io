@@ -11,15 +11,14 @@
 
     <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/style.css" />
     <link rel="alternate" type="application/rss+xml" title="{{ site.name }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
-
-    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+    <link rel="icon" type="image/svg+xml" href="{{ site.baseurl }}/images/pochacco-avatar.svg" />
   </head>
 
   <body>
     <div class="wrapper-masthead">
       <div class="container">
         <header class="masthead clearfix">
-          <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" /></a>
+          <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" alt="{{ site.name }}" /></a>
 
           <div class="site-info">
             <h1 class="site-name"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
@@ -42,9 +41,41 @@
       <div class="container">
         <footer class="footer">
           {% include svg-icons.html %}
+          <p style="margin-top: 10px; font-size: 13px; color: #999;">
+            Made with <span style="color: #FFB6C1;">&#10084;</span> and Pochacco vibes
+          </p>
         </footer>
       </div>
     </div>
+
+    <!-- Pochacco decoration -->
+    <img src="{{ site.baseurl }}/images/pochacco-avatar.svg" class="pochacco-decoration" alt="" />
+
+    <!-- Pochacco paw trail effect on click -->
+    <svg id="paw-template" style="display:none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+      <ellipse cx="10" cy="13" rx="5" ry="4" fill="#89CFF0" opacity="0.6"/>
+      <circle cx="5" cy="7" r="2.5" fill="#89CFF0" opacity="0.6"/>
+      <circle cx="10" cy="5" r="2.5" fill="#89CFF0" opacity="0.6"/>
+      <circle cx="15" cy="7" r="2.5" fill="#89CFF0" opacity="0.6"/>
+    </svg>
+
+    <script>
+      // Pochacco paw trail on click
+      document.addEventListener('click', function(e) {
+        var paw = document.createElement('div');
+        paw.className = 'paw-trail';
+        paw.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">' +
+          '<ellipse cx="10" cy="13" rx="5" ry="4" fill="#89CFF0" opacity="0.7"/>' +
+          '<circle cx="5" cy="7" r="2.5" fill="#89CFF0" opacity="0.7"/>' +
+          '<circle cx="10" cy="5" r="2.5" fill="#89CFF0" opacity="0.7"/>' +
+          '<circle cx="15" cy="7" r="2.5" fill="#89CFF0" opacity="0.7"/>' +
+          '</svg>';
+        paw.style.left = (e.pageX - 10) + 'px';
+        paw.style.top = (e.pageY - 10) + 'px';
+        document.body.appendChild(paw);
+        setTimeout(function() { paw.remove(); }, 1000);
+      });
+    </script>
 
     {% include analytics.html %}
   </body>

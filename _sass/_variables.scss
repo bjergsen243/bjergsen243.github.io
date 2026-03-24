@@ -1,23 +1,45 @@
 
 //
-// VARIABLES
+// VARIABLES — Pochacco Theme
 //
 
-// Colors
-$blue: #4183C4;
+// Pochacco Color Palette
+$pochacco-blue: #89CFF0;
+$pochacco-blue-dark: #5BB3E0;
+$pochacco-blue-light: #E8F4FD;
+$pochacco-mint: #B5EAD7;
+$pochacco-pink: #FFB6C1;
+$pochacco-pink-light: #FFF0F3;
+$pochacco-cream: #FFF8E7;
+$pochacco-yellow: #FFEAA7;
+
+// Core colors
+$blue: $pochacco-blue-dark;
 
 // Grays
-$black: #000;
-$darkerGray: #222;
-$darkGray: #333;
-$gray: #666;
-$lightGray: #eee;
+$black: #2D3436;
+$darkerGray: #2D3436;
+$darkGray: #444;
+$gray: #777;
+$lightGray: #f0f4f8;
 $white: #fff;
 
+// Accent
+$accent: $pochacco-blue;
+$accent-dark: $pochacco-blue-dark;
+$link-color: #4A90D9;
+$link-hover: $pochacco-blue-dark;
+
 // Font stacks
-$helvetica: Helvetica, Arial, sans-serif;
-$helveticaNeue: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$helvetica: 'Nunito', Helvetica, Arial, sans-serif;
+$helveticaNeue: 'Nunito', "Helvetica Neue", Helvetica, Arial, sans-serif;
 $georgia: Georgia, serif;
+$mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+// Borders & Shadows
+$border-radius: 12px;
+$card-shadow: 0 2px 12px rgba(137, 207, 240, 0.15);
+$card-shadow-hover: 0 6px 24px rgba(137, 207, 240, 0.25);
 
 // Mobile breakpoints
 @mixin mobile {
