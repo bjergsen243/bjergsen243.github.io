@@ -390,8 +390,12 @@ pre {
 }
 
 footer {
-  padding: 8px 0 6px;
+  padding: 6px 0;
   text-align: center;
+
+  // Compact the social icons row
+  a { margin: 0 3px; }
+  .svg-icon { vertical-align: middle; }
 }
 
 .footer-row {
