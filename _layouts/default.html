@@ -19,43 +19,16 @@
   </head>
 
   <body>
-    <canvas id="sparkle-canvas"></canvas>
-
-    <!-- Gradient blobs for depth -->
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-
-    <!-- Scattered stickers — positioned around edges, various sizes -->
-    <div class="sticker s1"><img src="{{ site.baseurl }}/images/pochacco-7.png" alt="" /></div>
-    <div class="sticker s2"><img src="{{ site.baseurl }}/images/sanrio-pompom.gif" alt="" /></div>
-    <div class="sticker s3"><img src="{{ site.baseurl }}/images/pochacco-magnify.gif" alt="" /></div>
-    <div class="sticker s4"><img src="{{ site.baseurl }}/images/mymelody.png" alt="" /></div>
-    <div class="sticker s5"><img src="{{ site.baseurl }}/images/pochacco-chick.gif" alt="" /></div>
-    <div class="sticker s6"><img src="{{ site.baseurl }}/images/pompompurin.png" alt="" /></div>
-    <div class="sticker s7"><img src="{{ site.baseurl }}/images/pochacco-5.png" alt="" /></div>
-    <div class="sticker s8"><img src="{{ site.baseurl }}/images/pochacco-3.png" alt="" /></div>
-    <div class="sticker s9"><img src="{{ site.baseurl }}/images/pochacco-10.png" alt="" /></div>
-    <div class="sticker s10"><img src="{{ site.baseurl }}/images/pochacco-6.png" alt="" /></div>
-
-    <!-- Decorative paw prints -->
-    <svg class="deco-paw paw-1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
-    <svg class="deco-paw paw-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
-    <svg class="deco-paw paw-3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
-    <svg class="deco-paw paw-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
-    <svg class="deco-paw paw-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
-
+    <!-- Content first — always -->
     <div class="page-wrap">
       <div class="wrapper-masthead">
         <div class="container">
           <header class="masthead clearfix">
             <a href="{{ site.baseurl }}/" class="site-avatar"><img src="{{ site.avatar }}" alt="{{ site.name }}" /></a>
-
             <div class="site-info">
               <h1 class="site-name"><a href="{{ site.baseurl }}/">{{ site.name }}</a></h1>
               <p class="site-description">{{ site.description }}</p>
             </div>
-
             <nav>
               <a href="{{ site.baseurl }}/">Blog</a>
               <a href="{{ site.baseurl }}/about">About</a>
@@ -79,6 +52,29 @@
           </div>
         </footer>
       </div>
+    </div>
+
+    <!-- ALL decorations in one fixed container, AFTER content in DOM -->
+    <div class="deco-layer" aria-hidden="true">
+      <canvas id="sparkle-canvas"></canvas>
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="sticker s1"><img src="{{ site.baseurl }}/images/pochacco-7.png" alt="" /></div>
+      <div class="sticker s2"><img src="{{ site.baseurl }}/images/sanrio-pompom.gif" alt="" /></div>
+      <div class="sticker s3"><img src="{{ site.baseurl }}/images/pochacco-magnify.gif" alt="" /></div>
+      <div class="sticker s4"><img src="{{ site.baseurl }}/images/mymelody.png" alt="" /></div>
+      <div class="sticker s5"><img src="{{ site.baseurl }}/images/pochacco-chick.gif" alt="" /></div>
+      <div class="sticker s6"><img src="{{ site.baseurl }}/images/pompompurin.png" alt="" /></div>
+      <div class="sticker s7"><img src="{{ site.baseurl }}/images/pochacco-5.png" alt="" /></div>
+      <div class="sticker s8"><img src="{{ site.baseurl }}/images/pochacco-3.png" alt="" /></div>
+      <div class="sticker s9"><img src="{{ site.baseurl }}/images/pochacco-10.png" alt="" /></div>
+      <div class="sticker s10"><img src="{{ site.baseurl }}/images/pochacco-6.png" alt="" /></div>
+      <svg class="deco-paw paw-1" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
+      <svg class="deco-paw paw-2" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
+      <svg class="deco-paw paw-3" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
+      <svg class="deco-paw paw-4" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
+      <svg class="deco-paw paw-5" viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="6" ry="5" fill="currentColor"/><circle cx="6" cy="8" r="3" fill="currentColor"/><circle cx="12" cy="5" r="3" fill="currentColor"/><circle cx="18" cy="8" r="3" fill="currentColor"/></svg>
     </div>
 
     <script>

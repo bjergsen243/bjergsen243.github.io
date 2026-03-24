@@ -28,16 +28,26 @@ body {
 .page-wrap { flex: 1 0 auto; }
 
 /*──────────────────────────────*/
-/* SPARKLE CANVAS               */
+/* DECORATION LAYER             */
 /*──────────────────────────────*/
 
-#sparkle-canvas {
+// Single fixed container for ALL decorations.
+// Placed after content in DOM so it never pushes layout.
+.deco-layer {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+}
+
+#sparkle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /*──────────────────────────────*/
@@ -45,11 +55,9 @@ body {
 /*──────────────────────────────*/
 
 .blob {
-  position: fixed;
+  position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .blob-1 {
@@ -84,9 +92,7 @@ body {
 /*──────────────────────────────*/
 
 .sticker {
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute;
   img { border-radius: 0; }
 }
 
@@ -126,9 +132,7 @@ body {
 /*──────────────────────────────*/
 
 .deco-paw {
-  position: fixed;
-  pointer-events: none;
-  z-index: 0;
+  position: absolute;
   color: rgba($pochacco-blue, 0.08);
 }
 
